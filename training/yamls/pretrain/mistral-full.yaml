@@ -1,0 +1,125 @@
+data_local: # ... PATH TO LOCAL DATA
+data_remote:  # If blank, files must be present in data_local
+max_seq_len: 2048
+global_seed: 17
+
+# to be sure set autoresume = True
+autoresume: false
+
+# Run Name
+run_name: # ... RUN NAME
+
+# Model
+model:
+  name: hf_causal_lm
+  pretrained_model_name_or_path: # ... PATH OF THE PRETRAINED MODEL
+  pretrained: true
+  init_device: mixed
+  use_flash_attention_2: true
+  config_overrides: {}
+  #   # WARNING: if setting `pretrained: true`, `max_position_embeddings` must match the
+  #   # `max_position_embeddings` used during pre-training
+  #   max_position_embeddings: ${max_seq_len}
+
+
+# Tokenizer
+tokenizer:
+  name: # ... PATH OF THE PRETRAINED TOKENIZER
+  kwargs:
+    model_max_length: ${max_seq_len}
+
+# Dataloaders
+train_loader:
+  name: text
+  dataset:
+    local: ${data_local}
+    remote: ${data_remote}
+    split: train
+    shuffle: true
+    max_seq_len: ${max_seq_len}
+    shuffle_seed: ${global_seed}
+  drop_last: true
+  num_workers: 8
+
+eval_loader:
+  name: text
+  dataset:
+    local: ${data_local}
+    remote: ${data_remote}
+    split: val_small
+    shuffle: false
+    max_seq_len: ${max_seq_len}
+    shuffle_seed: ${global_seed}
+  drop_last: false
+  num_workers: 8
+
+# Optimization
+scheduler:
+  name: cosine_with_warmup
+  t_warmup: 20ba
+  alpha_f: 0.1
+
+optimizer:
+  name: decoupled_adamw
+  lr: 1.0e-5
+  betas:
+  - 0.9
+  - 0.95
+  eps: 1.0e-08
+  weight_decay: 1.e-5
+
+algorithms:
+  gradient_clipping:
+    clipping_type: norm
+    clipping_threshold: 1.0
+
+max_duration: 2000ba
+eval_interval: 200ba
+eval_first: false
+eval_subset_num_batches: -1
+global_train_batch_size: 3072
+
+# System
+seed: ${global_seed}
+device_eval_batch_size: 16
+device_train_microbatch_size: 16
+# device_train_microbatch_size: auto
+precision: amp_bf16
+
+# FSDP
+fsdp_config:
+  sharding_strategy: FULL_SHARD
+  mixed_precision: PURE
+  activation_checkpointing: true
+  activation_checkpointing_reentrant: false
+  activation_cpu_offload: false
+  limit_all_gathers: true
+  state_dict_type: sharded
+
+# Logging
+progress_bar: false
+log_to_console: true
+console_log_interval: 1ba
+
+callbacks:
+  speed_monitor:
+    window_size: 10
+  lr_monitor: {}
+  memory_monitor: {}
+  runtime_estimator: {}
+  hf_checkpointer:
+    overwrite: true
+    precision: bfloat16
+    save_folder: # ... PATH TO SAVE (HF CHECKPOINT)
+    save_interval: 200ba
+
+loggers:
+  wandb: {
+    project: "Vocabulary-Adaptation",
+    entity: "terraformer-144",
+    # group: "mistral_continued_ita",
+  }
+
+save_interval: 200ba
+save_num_checkpoints_to_keep: 10  # Important, this cleans up checkpoints saved to DISK
+save_folder: # ... PATH TO SAVE
