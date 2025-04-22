@@ -24,10 +24,6 @@ ALIGNERS_lm_head = {
     "ortho": lambda _: Procrustes()
 }
 
-INTERSECTION_WORDNET_ITA_PATH = "/home/luca/llm-cva-tatent/stats_anchors/intersection_wordnet_ita.txt"
-INTERSECTION_WORDNET_ENG_PATH = "/home/luca/llm-cva-tatent/stats_anchors/intersection_wordnet_eng.txt"
-FREQUENCIES_ENG_PATH = "/home/luca/llm-cva-tatent/stats_anchors/token_counts_en_str.json"
-
 def reproducibility(seed):
     # numpy random number generator
     np.random.seed(seed)
@@ -51,7 +47,6 @@ class SemanticAlignmentEmbeddingInitializer:
             aligner: str = "ortho",
             num_anchors: int = 5000,
             substitute_intersection: bool = False,
-            target_vocabulary_strategy: str = "union",
             anchor_selection: str = "random"
     ):
         self.source_model = source_model
@@ -63,7 +58,6 @@ class SemanticAlignmentEmbeddingInitializer:
         self.aligner = aligner
         self.num_anchors = num_anchors
         self.substitute_intersection = substitute_intersection
-        self.target_vocabulary_strategy = target_vocabulary_strategy
         self.anchor_selection = anchor_selection
 
         print("Tie Weghts -> ", tie_weights)
@@ -92,74 +86,6 @@ class SemanticAlignmentEmbeddingInitializer:
 
         # enable reproducibility
         reproducibility(self.seed)
-
-    def _wordnet_sample_anchors(self) -> list[tuple]:
-        print("WORDNET anchor selection")
-
-        intersection = list(self.vocabulary_intersection.items())
-
-        wordnet_tokens = []
-
-        # load the italian words from stats
-        with open(INTERSECTION_WORDNET_ITA_PATH, "r") as f:
-            italian_tokens = [t.strip() for t in f.readlines()]
-
-        # load the english words from stats
-        with open(INTERSECTION_WORDNET_ENG_PATH, "r") as f:
-            english_tokens_full = [t.strip() for t in f.readlines()]
-
-        english_tokens = []
-
-        # remove the english tokens that are present even in italian
-        for en_tok in english_tokens_full:
-            if en_tok in italian_tokens:
-                continue
-
-            english_tokens.append(en_tok)
-
-        ENGLISH_TOK_NUM = self.num_anchors - len(italian_tokens)
-        
-        # sort english tokens by their frequency
-        ## pair each token with its frequency in the frequency english file
-        with open(FREQUENCIES_ENG_PATH, "r") as f:
-            english_tok_frequencies = json.load(f) # are already sorted
-
-        # fill wordnet_tokens with ENGLISH_TOK_NUM english tokens
-        for k, _ in english_tok_frequencies.items():
-            if k in english_tokens:
-                wordnet_tokens.append(k)
-
-            if len(wordnet_tokens) == ENGLISH_TOK_NUM:
-                break
-        
-        wordnet_tokens += italian_tokens
-
-        # Generate anchor_tokens, from intersection...
-        anchor_tokens = []
-        for tok_mapping in intersection:
-            if tok_mapping[0] in wordnet_tokens:
-                anchor_tokens.append(tok_mapping)
-
-        return anchor_tokens
-
-
-    def _prefixes_sample_anchors(self) -> list[tuple]:
-
-        print("PREFIX anchor selection")
-
-        intersection = list(self.vocabulary_intersection.items())
-
-        prefixes = []
-
-        for tok, mapping in intersection:
-            if tok.startswith("▁"):
-                prefixes.append((tok, mapping))
-        
-        prefixes.sort(reverse=True, key=lambda x: len(x[0]))
-
-        anchor_tokens = prefixes[:self.num_anchors]
-
-        return anchor_tokens
 
     def _random_sample_anchors(self) -> list[tuple]:
         anchor_tokens = random.sample(list(self.vocabulary_intersection.items()), self.num_anchors)
@@ -202,20 +128,12 @@ class SemanticAlignmentEmbeddingInitializer:
         target_token_to_idx = {t: i for t, i in self.target_tokenizer.get_vocab().items()}
         source_token_to_idx = {self._map_llama_to_minerva(t): i for t, i in self.source_tokenizer.get_vocab().items()}
 
-        if self.target_vocabulary_strategy == "union":
-            self.target_vocabulary_out = source_token_to_idx.copy()
-        else:
-            self.target_vocabulary_out = target_token_to_idx.copy()
+        self.target_vocabulary_out = target_token_to_idx.copy()
 
-        new_token_count = 0
         for token, target_idx in target_token_to_idx.items():
             if token in source_token_to_idx:  # intersection
                 source_idx = source_token_to_idx[token]
                 self.vocabulary_intersection[token] = (source_idx, target_idx)
-            else:
-                if self.target_vocabulary_strategy == "union":
-                    self.target_vocabulary_out[token] = len(source_token_to_idx) + new_token_count
-                    new_token_count += 1
 
         print(f"Intersection length : ({len(self.vocabulary_intersection)})")
 
@@ -223,10 +141,6 @@ class SemanticAlignmentEmbeddingInitializer:
 
         if self.anchor_selection == "random":
             anchor_tokens = self._random_sample_anchors()
-        elif self.anchor_selection == "prefix":
-            anchor_tokens = self._prefixes_sample_anchors()
-        elif self.anchor_selection == "wordnet":
-            anchor_tokens = self._wordnet_sample_anchors()
         elif self.anchor_selection == "full":
             anchor_tokens = self._full_intersection_anchors()
 
@@ -283,15 +197,6 @@ class SemanticAlignmentEmbeddingInitializer:
         else:
             self.source_model.tie_weights()
 
-        if self.target_vocabulary_strategy == "union":
-            # update tokenizier
-            rev_target_vocab_out = {idx: t for t, idx in self.target_vocabulary_out.items()}
-            new_tokens = []
-            for i in range(new_token_count):
-                new_tokens.append(rev_target_vocab_out[len(source_token_to_idx) + i])
-
-            self.source_tokenizer.add_tokens(new_tokens)
-
         # Update the config
         self.source_model.config.vocab_size = len(self.target_vocabulary_out)
         self.source_model.config.pad_token_id = self.target_tokenizer.pad_token_id
@@ -318,16 +223,8 @@ class SemanticAlignmentEmbeddingInitializer:
                                           source_embeddings_intersection, source_token_to_idx, target_embeddings,
                                           target_token_to_idx, translator):
         translator.fit(x=helper_embeddings_anchor, y=source_embeddings_anchor)
-        #if self.substitute_intersection and self.target_vocabulary_strategy == "substitution":
-            # new embedding will be the transformer embedding of the helper model
-            # target_embeddings.weight.data = translator(helper_embeddings)["x"]
-        #else:
-            # if self.target_vocabulary_strategy == "substitution":
-            #    for token, (source_idx, target_idx) in self.vocabulary_intersection.items():
-            #        target_embeddings.weight.data[target_idx] = source_embeddings[source_idx]
 
         for token, target_idx in self.target_vocabulary_out.items():
-            # if self.target_vocabulary_strategy == "union" and token in source_token_to_idx:
             if token in source_token_to_idx:
                 target_embeddings.weight.data[target_idx] = source_embeddings[source_token_to_idx[token]]
             else:

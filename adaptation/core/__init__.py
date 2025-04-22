@@ -1,0 +1,4 @@
+from .clp_init import CLPEmbeddingInitializer
+from .semantic_alignment import SemanticAlignmentEmbeddingInitializer
+from .average_naive import AverageEmbeddingInitializer
+from .clp_random_init import CLPRandomEmbeddingInitializer

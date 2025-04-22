@@ -25,7 +25,6 @@ class CLPRandomEmbeddingInitializer:
             target_tokenizer: AutoTokenizer,
             seed: int = 42,
             tie_weights: bool = True,
-            target_vocabulary_strategy: str = "union"
     ):
         self.source_model = source_model
         self.source_tokenizer: AutoTokenizer = source_tokenizer
@@ -51,15 +50,7 @@ class CLPRandomEmbeddingInitializer:
         target_token_to_idx = {t: i for t, i in self.target_tokenizer.get_vocab().items()}
         source_token_to_idx = {t: i for t, i in self.source_tokenizer.get_vocab().items()}
 
-        if self.target_vocabulary_strategy == "union":
-            self.target_vocabulary_out = source_token_to_idx.copy()
-            new_token_count = 0
-            for token, _ in target_token_to_idx.items():
-                if not token in source_token_to_idx:
-                    self.target_vocabulary_out[token] = len(source_token_to_idx) + new_token_count
-                    new_token_count += 1
-        else:
-            self.target_vocabulary_out = target_token_to_idx.copy()
+        self.target_vocabulary_out = target_token_to_idx.copy()
 
         #####
         # Generate random embeddings
@@ -106,15 +97,6 @@ class CLPRandomEmbeddingInitializer:
             self.source_model.set_output_embeddings(target_lm_head_emb)
         else:
             self.source_model.tie_weights()
-
-        # update tokenizier
-        if self.target_vocabulary_strategy == "union":
-            rev_target_vocab_out = {idx: t for t, idx in self.target_vocabulary_out.items()}
-            new_tokens = []
-            for i in range(new_token_count):
-                new_tokens.append(rev_target_vocab_out[len(source_token_to_idx) + i])
-
-            self.source_tokenizer.add_tokens(new_tokens)
 
         # Update the config
         self.source_model.config.vocab_size = len(self.target_vocabulary_out)

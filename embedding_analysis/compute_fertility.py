@@ -6,19 +6,13 @@ import nltk
 
 nltk.download('punkt')
 
-# TOKENIZER_NAME = "mistralai/Mistral-7B-v0.1"
-# TOKENIZER_NAME = "google/gemma-7b"
-# TOKENIZER_NAME = "sapienzanlp/minestral-1B-100B_it-100B_en-cx-04032024"
-# TOKENIZER_NAME = "meta-llama/Meta-Llama-3-8B"
-# TOKENIZER_NAME = "/home/luca/llm-cva-tatent/adaptation/mistral_7B-adapted_3B_sgd_8k_substitution"
 TOKENIZER_NAME = "sapienzanlp/Minerva-7B-base-v1.0"
 
 
 LANG = "it"
 LANG_LONG = "italian"
 LIMIT_DOCS = 50_000
-# DS = "CULTURAX"
-DS = "WIKIPEDIA"
+DS = "WIKIPEDIA" # "CULTURAX"
 
 def main():
     tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
