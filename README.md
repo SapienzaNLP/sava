@@ -43,7 +43,7 @@ If you use any part of this work, please consider citing the paper as follows:
 
 ## 🪪 License
 
-The data and software are licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+The data and software are licensed under [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
 ## Acknowledgements
 We gratefully acknowledges the support of Future AI Research ([PNRR MUR project PE0000013-FAIR](https://fondazione-fair.it/en/)).
