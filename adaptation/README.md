@@ -24,6 +24,7 @@ usage: main.py [-h] --initialization_method
                [--num_anchors NUM_ANCHORS]
                [--tie_weights]
                [--anchor_selection ANCHOR_SELECTION]
+'
 options:
   -h, --help            show this help message and exit
   --initialization_method {clp,clp_random,average_naive,semantic_alignment}
@@ -34,8 +35,7 @@ options:
                         The source tokenizer to initialize the target
                         tokenizer with.
   --helper_model_name_or_path HELPER_MODEL_NAME_OR_PATH
-                        [clp, semantic] The helper model to help initialize a
-                        terget model.
+                        [clp, semantic] The helper model to help initialize a terget model.
   --target_tokenizer_name_or_path TARGET_TOKENIZER_NAME_OR_PATH
                         The target
                         tokenizer name or path.
@@ -43,8 +43,7 @@ options:
                         The cache directory to save the pretrained models.
   --seed SEED           The random seed.
   --copy_special_tokens
-                        [clp, clp_plus] Whether to copy the special tokens'
-                        embeddings from the source model to the target model.
+                        [clp, clp_plus] Whether to copy the special tokens embeddings from the source model to the target model.
   --output_dir OUTPUT_DIR
                         The output directory to save the target model and
                         tokenizer.
@@ -56,6 +55,7 @@ options:
                         If the source model use tie weights architecture.
   --substitute_intersection
                         [semantic] If map throught the trained aligned even the intersection tokens.
+'
 ```
 
 ## Reproduction
@@ -77,4 +77,4 @@ python main.py \
 ```
 
 ## Acknowledgement
-This code is based on the repository published by Atsuki Yamaguchi et al. https://github.com/gucci-j/llm-cva?tab=readme-ov-file. We are very gratefull to the 
+This code is based on the repository published by Atsuki Yamaguchi et al. https://github.com/gucci-j/llm-cva?tab=readme-ov-file. We are very gratefull to the quality of its public code.
