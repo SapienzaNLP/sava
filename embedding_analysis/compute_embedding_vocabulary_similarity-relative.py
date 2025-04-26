@@ -8,11 +8,8 @@ from numpy import dot
 from numpy.linalg import norm
 
 
-SAVE_ANCHORS_PATH = "/home/luca/llm-cva-tatent/similairities_anchors.json"
-
-
-def get_anchors_idx():
-    with open(SAVE_ANCHORS_PATH, "r") as f:
+def get_anchors_idx(anchor_path):
+    with open(anchor_path, "r") as f:
         anchor_idx = json.load(f)
 
     return anchor_idx
@@ -59,6 +56,7 @@ def main(args):
     output_dir = args.output_dir
     rev_1 = args.rev_1
     rev_2 = args.rev_2
+    anchor_path = args.anchor_path
 
     if rev_1:
         model_1 = AutoModelForCausalLM.from_pretrained(model_1_name, revision=rev_1)
@@ -78,7 +76,7 @@ def main(args):
     del model_1
     del model_2
 
-    anchors_idx = get_anchors_idx()
+    anchors_idx = get_anchors_idx(anchor_path)
 
     model_1_anchors = map_anchors_to_embedding(model_1_embedding, anchors_idx)
     model_2_anchors = map_anchors_to_embedding(model_2_embedding, anchors_idx)
@@ -114,13 +112,14 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-                    prog='',
+                    prog="Compute the similarity between two models' embedding space. Use a precomputed set of anchor tokens.",
                     description='')    
     parser.add_argument('-m1', '--model_1')
     parser.add_argument('-r1', '--rev_1', required=False)
     parser.add_argument('-m2', '--model_2')
     parser.add_argument('-r2', '--rev_2', required=False)
     parser.add_argument('-o', '--output_dir')
+    parser.add_argument('-a', '--anchor_path')
     args = parser.parse_args()
 
     main(args)

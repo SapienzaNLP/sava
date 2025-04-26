@@ -7,10 +7,6 @@ import faiss
 import json
 from sklearn.metrics.pairwise import cosine_similarity
 
-#MODEL_1_NAME = "SemanticAlignment/mistral_7B-adapted_3B_sgd_full_substitution"
-#MODEL_2_NAME = "sapienzanlp/Minerva-3B-base-v1.0"
-#PATH_TO_SAVE = "/home/luca/llm-cva-tatent/similarities"
-
 def compute_nearest_neighboor_cosine(embedding_matrix, num_neigh=11):
     print("compute cosine similarity")
     sims = cosine_similarity(embedding_matrix)
@@ -66,7 +62,6 @@ def main(args):
         model_1 = AutoModelForCausalLM.from_pretrained(model_1_name, revision=rev_1)
     else:
         model_1 = AutoModelForCausalLM.from_pretrained(model_1_name)
-    #tokenizer_1 = AutoTokenizer.from_pretrained(MODEL_1_NAME)
 
     if rev_2:
         model_2 = AutoModelForCausalLM.from_pretrained(model_2_name, revision=rev_2)
@@ -74,7 +69,6 @@ def main(args):
         model_2 = AutoModelForCausalLM.from_pretrained(model_2_name)
 
     model_1_embedding = model_1.get_input_embeddings().weight.detach().numpy()
-    #tokens_1 = {i: t for t,i in tokenizer_1.get_vocab().items()}
     model_2_embedding = model_2.get_input_embeddings().weight.detach().numpy()
 
     model_1_embedding = model_1_embedding[offset:] # remove special tokens

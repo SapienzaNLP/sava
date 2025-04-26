@@ -1,0 +1,7 @@
+transformers
+datasets
+torch
+vllm
+evaluate
+rouge-score
+unbabel-comet

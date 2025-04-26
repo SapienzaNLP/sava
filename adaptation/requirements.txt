@@ -1,0 +1,4 @@
+latentis
+transformers
+datasets
+torch

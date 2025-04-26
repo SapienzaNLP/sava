@@ -5,11 +5,6 @@ import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 from core import (CLPEmbeddingInitializer, 
-                  CLPPlusEmbeddingInitializer,
-                  FOCUSEmbeddingInitializer,
-                  HeuristicsEmbeddingInitializer,
-                  RandomEmbeddingInitializer,
-                  # UnusedEmbeddingTokenizerPruner,
                   SemanticAlignmentEmbeddingInitializer,
                   AverageEmbeddingInitializer,
                   CLPRandomEmbeddingInitializer)
@@ -265,16 +260,16 @@ if __name__ == "__main__":
     parser.add_argument(
         "--target_tokenizer_name_or_path",
         type=str,
-        required=False,
+        required=True,
         default=None,
-        help="[expand_after] The helper tokenizer to help initialize a terget tokenizer."
+        help="The helper model tokenizer."
     )
     parser.add_argument(
         "--helper_model_name_or_path", 
         type=str,
         required=False,
         default=None,
-        help="[clp, clp_plus] The helper model to help initialize a terget model."
+        help="[clp, semantic] The helper model to help initialize a terget model."
     )
     parser.add_argument(
         "--cache_dir",
@@ -302,7 +297,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--tie_weights",
         action="store_true",
-        help="[clp_plus] Whether to tie the weights of the target model."
+        help="Whether to tie the weights of the target model."
     )
     parser.add_argument(
         "--aligner",
@@ -320,7 +315,7 @@ if __name__ == "__main__":
         "--target_vocabulary_strategy",
         type=str,
         help="The strategy to use for vocabulary ['union', 'substitute']",
-        default="union"
+        default="substitute"
     )
     parser.add_argument(
         "--anchor_selection",
