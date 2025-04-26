@@ -17,7 +17,7 @@
 
 # Usage
 
-This repository is divided in three parts, `adaptation`, `embedding analysis`, `train`, and `analysis`.
+This repository is divided in four parts, `adaptation`, `embedding analysis`, `train`, and `analysis`.
 
 Each part is implemented and documented in the respective folder of this repository.
 
