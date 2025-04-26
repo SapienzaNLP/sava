@@ -2,6 +2,10 @@
 
 # Optimizing LLMs for Italian: Reducing Token Fertility and Enhancing Efficiency Through Vocabulary Adaptation
 
+<img src="https://github.com/Andrew-Wyn/images/blob/master/sava/italian_adapt-img.jpg?raw=true" width="400" style="border-radius:10%"/>
+
+<br>
+
 [![Conference](https://img.shields.io/badge/NAACL-2025-4b44ce)](https://2025.naacl.org/)
 [![arXiv](https://img.shields.io/badge/arXiv-paper-b31b1b.svg)](https://arxiv.org/abs/2504.17025v1)
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
