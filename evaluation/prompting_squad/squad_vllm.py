@@ -7,12 +7,6 @@ from tqdm import tqdm
 import json
 import os
 import argparse
-import csv
-
-os.environ ['CUDA_LAUNCH_BLOCKING'] ='1'
-
-# VARS
-CACHE_DATASETS=""
 
 # Definition of evaluation metric
 rouge = evaluate.load('rouge') ## import the scorer
@@ -48,14 +42,9 @@ def format_squad(e):
     return e
 
 
-def main():
-    # arguments
-    parser = argparse.ArgumentParser(description='Prompting neutral transformation experiments')
-    parser.add_argument('--model_name', type=str)
-
-    args = parser.parse_args()
-
+def main(args):
     model_name = args.model_name
+    output_dir = args.output_dir
 
     llm = LLM(model=model_name, gpu_memory_utilization=0.7, max_model_len=2048, dtype="bfloat16", trust_remote_code=True)
 
@@ -90,7 +79,7 @@ def main():
 
     predicted = [p.split("\n\n")[0] for p in predicted]
 
-    with open(f"/leonardo/home/userexternal/lmoroni0/__Work/minerva_sft/prompting_squad_examples/{model_name.split('/')[-4]}-{model_name.split('/')[-1]}.csv","w") as f:
+    with open(os.path.join(output_dir, f"predictions_{model_name.split('/')[-1]}.csv"),"w") as f:
         f.writelines(f"CONTEXT\tQUESTION\tPREDICTED\tANSWER\n")
         for c, q, p, a in zip(context, question, predicted, answer):
             f.writelines(f"{c}\t{q}\t{p}\t{a}\n")
@@ -103,11 +92,18 @@ def main():
 
     results = rouge.compute(predictions=predicted, references=answer)
 
-    with open(f"/leonardo/home/userexternal/lmoroni0/__Work/minerva_sft/prompting_squad_results/{model_name.split('/')[-4]}-{model_name.split('/')[-1]}.csv","w") as f:
+    with open(os.path.join(output_dir, f"results_{model_name.split('/')[-1]}.csv"),"w") as f:
         f.writelines(json.dumps(results))
 
     print(results)
 
 
 if __name__ == "__main__":
-    main()
+    # arguments
+    parser = argparse.ArgumentParser(description='Prompting Transformer to assess Question Answeting capabilities on Italian texts.')
+    parser.add_argument("-m", "--model_name", type=str)
+    parser.add_argument("-o", "--output_dir", type=str)
+
+    args = parser.parse_args()
+
+    main(args)

@@ -7,9 +7,7 @@ from tqdm import tqdm
 import json
 import os
 import argparse
-import csv
 
-os.environ ['CUDA_LAUNCH_BLOCKING'] ='1'
 
 # VARS
 CACHE_DATASETS=""
@@ -53,18 +51,11 @@ def map_opus_100(example):
     return example
 
 
-def main():
-    # arguments
-    parser = argparse.ArgumentParser(description='Prompting translation experiments')
-    parser.add_argument('--model_name', type=str)
-    parser.add_argument('--from_lang', type=str)
-    parser.add_argument('--to_lang', type=str)
-
-    args = parser.parse_args()
-
+def main(args):
     model_name = args.model_name
     from_lang = args.from_lang
     to_lang = args.to_lang
+    output_dir = args.output_dir
 
     llm = LLM(model=model_name, gpu_memory_utilization=0.7, max_model_len=2048, dtype="bfloat16", trust_remote_code=True)
 
@@ -99,7 +90,7 @@ def main():
 
     predicted = [p.split("\n\n")[0] for p in predicted]
 
-    with open(f"/leonardo/home/userexternal/lmoroni0/__Work/minerva_sft/prompting_translations/{from_lang}_{to_lang}-{model_name.split('/')[-4]}-{model_name.split('/')[-1]}.csv","w") as f:
+    with open(os.path.join(output_dir, f"predictions_{from_lang}-{to_lang}_{model_name.split('/')[-1]}.csv"),"w") as f:
         f.writelines(f"SOURCE\tPREDICTED\tREFERENCE\n")
         for s, p, r in zip(sources, predicted, references):
             f.writelines(f"{s}\t{p}\t{r}\n")
@@ -113,11 +104,19 @@ def main():
     comet_result = comet_metric.compute(predictions=predicted, references=references, sources=sources)
     result = {"comet": round(comet_result["mean_score"] * 100, 4)}
 
-    with open(f"/leonardo/home/userexternal/lmoroni0/__Work/minerva_sft/prompting_translate_results/{from_lang}_{to_lang}-{model_name.split('/')[-4]}-{model_name.split('/')[-1]}.csv","w") as f:
+    with open(os.path.join(output_dir, f"results_{from_lang}-{to_lang}_{model_name.split('/')[-1]}.csv"),"w") as f:
         f.writelines(json.dumps(result))
 
     print(result)
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description='Prompting Transformer to assess Translation capabilities on Italian and English texts.')
+    parser.add_argument("-m", '--model_name', type=str)
+    parser.add_argument("-f", '--from_lang', type=str)
+    parser.add_argument("-t", '--to_lang', type=str)
+    parser.add_argument("-o", "--output_dir", type=str)
+
+    args = parser.parse_args()
+
+    main(args)
