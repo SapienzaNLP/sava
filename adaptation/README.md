@@ -63,7 +63,7 @@ options:
 ```bash
 #!/bin/bash
 
-cd /path/to/llm-vocab-adaptation/adaptation/src
+cd /path/to/sava/adaptation/
 
 python main.py \
     --source_model_name_or_path meta-llama/Llama-3.1-8B \

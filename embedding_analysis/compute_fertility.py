@@ -3,24 +3,26 @@ from transformers import AutoTokenizer
 from nltk.tokenize import word_tokenize
 from tqdm import tqdm
 import nltk
+import argparse
 
 nltk.download('punkt')
 
-TOKENIZER_NAME = "sapienzanlp/Minerva-7B-base-v1.0"
+LANG_LONG = {"it": "italian",
+            "en": "english"}
 
-
-LANG = "it"
-LANG_LONG = "italian"
 LIMIT_DOCS = 50_000
-DS = "WIKIPEDIA" # "CULTURAX"
 
-def main():
-    tokenizer = AutoTokenizer.from_pretrained(TOKENIZER_NAME)
+def main(args):
+    tokenizer_name = args.tokenizer_name
+    lang = args.lang
+    dataset = args.dataset
 
-    if DS == "CULTURAX":
-        DS_STREAM = load_dataset('uonlp/CulturaX', LANG, split='train', streaming=True)
-    else:
-        DS_STREAM = load_dataset("wikimedia/wikipedia", f"20231101.{LANG}", split='train', streaming=True)
+    tokenizer = AutoTokenizer.from_pretrained(tokenizer_name)
+
+    if dataset == "CULTURAX":
+        DS_STREAM = load_dataset('uonlp/CulturaX', lang, split='train', streaming=True)
+    elif dataset == "WIKIPEDIA":
+        DS_STREAM = load_dataset("wikimedia/wikipedia", f"20231101.{lang}", split='train', streaming=True)
 
     fertility = 0
 
@@ -41,8 +43,16 @@ def main():
 
     fertility = fertility / LIMIT_DOCS
 
-    print(f"{TOKENIZER_NAME} - FERTILITY over {LIMIT_DOCS} over {DS} {LANG_LONG}: {fertility}")
+    print(f"{tokenizer_name} - FERTILITY over {LIMIT_DOCS} over {dataset} {LANG_LONG[lang]}: {fertility}")
 
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(
+                    prog='Fertility',
+                    description='Compute fertility of a given tokenizer for a predefined dataset.')    
+    parser.add_argument('-t', '--tokenizer_name')
+    parser.add_argument('-l', '--lang')
+    parser.add_argument('-d', '--dataset')
+    args = parser.parse_args()
+
+    main(args)
