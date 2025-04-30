@@ -13,8 +13,10 @@
 [![Hugging Face Collection](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Collection_Llama-FCD21D)](https://huggingface.co/collections/SemanticAlignment/llama-31-adapted-67924314d8957c78a3e7bcaf)
 </div>
 
-<div> A repository containing the original code and models for the paper: <br/><br/> Luca Moroni, Giovanni Puccetti, Pere-Lluís Huguet Cabot, Andrei Stefan Bejgu, Alessio Miaschi, Edoardo Barba, Felice Dell’Orletta, Andrea Esuli, Roberto Navigli. 
-[Optimizing LLMs for Italian: Reducing Token Fertility and Enhancing Efficiency Through Vocabulary Adaptation](https://aclanthology.org/2025.findings-naacl.371.pdf), in _Findings of NAACL 2025_. </div>
+A repository containing the original code and models for the paper:
+
+Luca Moroni, Giovanni Puccetti, Pere-Lluís Huguet Cabot, Andrei Stefan Bejgu, Alessio Miaschi, Edoardo Barba, Felice Dell’Orletta, Andrea Esuli, Roberto Navigli. 
+[Optimizing LLMs for Italian: Reducing Token Fertility and Enhancing Efficiency Through Vocabulary Adaptation](https://aclanthology.org/2025.findings-naacl.371.pdf), in *Findings of NAACL 2025*. 
 
 # Usage
 
@@ -45,7 +47,7 @@ If you use any part of this work, please consider citing the paper as follows:
 
 ## 🪪 License
 
-The data and software are licensed under [Creative Commons Attribution-ShareAlike 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+The data and software are licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
 ## Acknowledgements
 We gratefully acknowledges the support of Future AI Research ([PNRR MUR project PE0000013-FAIR](https://fondazione-fair.it/en/)).
