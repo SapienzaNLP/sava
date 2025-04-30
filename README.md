@@ -13,7 +13,8 @@
 [![Hugging Face Collection](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Collection_Llama-FCD21D)](https://huggingface.co/collections/SemanticAlignment/llama-31-adapted-67924314d8957c78a3e7bcaf)
 </div>
 
-<div align="center"> A repository containing the original code and models for the paper "Optimizing LLMs for Italian: Reducing Token Fertility and Enhancing Efficiency Through Vocabulary Adaptation". </div>
+<div> A repository containing the original code and models for the paper: <br/><br/> Luca Moroni, Giovanni Puccetti, Pere-Lluís Huguet Cabot, Andrei Stefan Bejgu, Alessio Miaschi, Edoardo Barba, Felice Dell’Orletta, Andrea Esuli, Roberto Navigli. 
+[Optimizing LLMs for Italian: Reducing Token Fertility and Enhancing Efficiency Through Vocabulary Adaptation](https://aclanthology.org/2025.findings-naacl.371.pdf), in _Findings of NAACL 2025_. </div>
 
 # Usage
 
@@ -21,13 +22,10 @@ This repository is divided in four parts, `adaptation`, `embedding analysis`, `t
 
 Each part is implemented and documented in the respective folder of this repository.
 
-The *Adaptation* part constains the code to reproduce the adaptation of english LLMs on a given tokenizer.
-
-The *Embedding Analysis* part contains the script used to analyze the embedding structure of the adapted models.
-
-The *Train* folder contains the code and the reference for the library used to train adapted models.
-
-The *Evaluation* folder contains the code and the reference of the dataset and libraries used to evaluate adapted models during the further stage of training.
+* The *Adaptation* part constains the code to reproduce the adaptation of english LLMs on a given tokenizer.
+* The *Embedding Analysis* part contains the script used to analyze the embedding structure of the adapted models.
+* The *Train* folder contains the code and the reference for the library used to train adapted models.
+* The *Evaluation* folder contains the code and the reference of the dataset and libraries used to evaluate adapted models during the further stage of training.
 
 ## Cite this work
 
