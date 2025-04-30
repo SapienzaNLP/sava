@@ -50,5 +50,5 @@ If you use any part of this work, please consider citing the paper as follows:
 The data and software are licensed under [Creative Commons Attribution-NonCommercial-ShareAlike 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 
 ## Acknowledgements
-We gratefully acknowledges the support of Future AI Research ([PNRR MUR project PE0000013-FAIR](https://fondazione-fair.it/en/)).
+We gratefully acknowledge the support of Future AI Research ([PNRR MUR project PE0000013-FAIR](https://fondazione-fair.it/en/)). 
 Partially financed by the European Union - NextGenerationEU through the Italian Ministry of University and Research under PNRR - PRIN 2022 (2022EPTPJ9) "WEMB: Word Embeddings from Cognitive Linguistics to Language Engineering and back" and by the PNRR project ITSERR (CUP B53C22001770006). We acknowledge the support of the ISCRA project TRAVEL (HP10CY9V7K) for awarding access to the LEONARDO supercomputer, owned by the EuroHPC Joint Undertaking, hosted by CINECA (Italy) and thank Giuseppe Fiameni for his support.
