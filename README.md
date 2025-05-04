@@ -34,14 +34,12 @@ Each part is implemented and documented in the respective folder of this reposit
 If you use any part of this work, please consider citing the paper as follows:
 
 ```bibtex
-@misc{moroni2025optimizingllmsitalianreducing,
-      title={Optimizing LLMs for Italian: Reducing Token Fertility and Enhancing Efficiency Through Vocabulary Adaptation}, 
-      author={Luca Moroni and Giovanni Puccetti and Pere-Lluis Huguet Cabot and Andrei Stefan Bejgu and Edoardo Barba and Alessio Miaschi and Felice Dell'Orletta and Andrea Esuli and Roberto Navigli},
-      year={2025},
-      eprint={2504.17025},
-      archivePrefix={arXiv},
-      primaryClass={cs.CL},
-      url={https://arxiv.org/abs/2504.17025}, 
+@inproceedings{moroni2025optimizing,
+  title={Optimizing LLMs for Italian: Reducing Token Fertility and Enhancing Efficiency Through Vocabulary Adaptation},
+  author={Moroni, Luca and Puccetti, Giovanni and Cabot, Pere-Llu{\'\i}s Huguet and Bejgu, Andrei Stefan and Miaschi, Alessio and Barba, Edoardo and Dell’Orletta, Felice and Esuli, Andrea and Navigli, Roberto},
+  booktitle={Findings of the Association for Computational Linguistics: NAACL 2025},
+  pages={6646--6660},
+  year={2025}
 }
 ```
 
