@@ -42,6 +42,7 @@ cd /path/to/sava/evaluation
 
 python prompting_squad/tranlsation_vllm.py \
     --model_name MODEL_NAME \
+    --dataset_path DATASET_PATH \
     --output_dir OUTPUT_DIR \
     --from_lang FROM_LANG \
     --to_lang TO_LANG

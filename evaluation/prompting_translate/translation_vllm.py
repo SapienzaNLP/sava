@@ -53,6 +53,7 @@ def map_opus_100(example):
 
 def main(args):
     model_name = args.model_name
+    dataset_path = args.dataset_path
     from_lang = args.from_lang
     to_lang = args.to_lang
     output_dir = args.output_dir
@@ -62,11 +63,11 @@ def main(args):
     print(llm)
 
     # Load_dataset: FLORES
-    train_data = load_dataset("csv", data_files=f"/leonardo/home/userexternal/lmoroni0/__Work/minerva_sft/Flores/flores.{from_lang}-{to_lang}/dev.csv", index_col=False, cache_dir=CACHE_DATASETS)["train"]
+    train_data = load_dataset("csv", data_files=os.path.join(dataset_path, f"flores.{from_lang}-{to_lang}/dev.csv"), index_col=False, cache_dir=CACHE_DATASETS)["train"]
     train_data = train_data.rename_column("src", from_lang)
     train_data = train_data.rename_column("ref", to_lang)
 
-    test_data = load_dataset("csv", data_files=f"/leonardo/home/userexternal/lmoroni0/__Work/minerva_sft/Flores/flores.{from_lang}-{to_lang}/test.csv", index_col=False, cache_dir=CACHE_DATASETS)["train"]
+    test_data = load_dataset("csv", data_files=os.path.join(dataset_path, f"flores.{from_lang}-{to_lang}/test.csv"), index_col=False, cache_dir=CACHE_DATASETS)["train"]
     test_data = test_data.rename_column("src", from_lang)
     test_data = test_data.rename_column("ref", to_lang)
 
@@ -113,6 +114,7 @@ def main(args):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Prompting Transformer to assess Translation capabilities on Italian and English texts.')
     parser.add_argument("-m", '--model_name', type=str)
+    parser.add_argument("-d", '--dataset_path', type=str)
     parser.add_argument("-f", '--from_lang', type=str)
     parser.add_argument("-t", '--to_lang', type=str)
     parser.add_argument("-o", "--output_dir", type=str)
